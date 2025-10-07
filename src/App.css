@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+.atm-screen {
+  background-color: #61dafb;
+  margin: 0 auto;
+  width: 500px;
+  height: 450px;
+
+  .ant-typography {
+    color: white;
+  }
+}
+
+.card.inactive {
+  filter: grayscale(100%)
+}

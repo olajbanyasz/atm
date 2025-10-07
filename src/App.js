@@ -1,23 +1,53 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import InitialScreen from './components/InitialScreen';
+import PinScreen from './components/PinScreen';
+import TransactionScreen from './components/TransactionScreen';
+import {mockUser} from './mock/user';
 
 function App() {
+  const [isCardInserted, setIsCardInserted] = useState(false);
+  const [pinCode, setPinCode] = useState('');
+  const [isPinValid, setIsPinValid] = useState(false);
+  const [user, setUser] = useState(mockUser);
+
+  const checkPin = () => {
+    if(pinCode === user.pinCode) {
+      setIsPinValid(true);
+    } else {
+      setIsPinValid(false);
+      setPinCode('');
+    }
+  };
+
+  const onExit = () => {
+    setIsCardInserted(false);
+    setIsPinValid(false);
+    setPinCode('');
+  };
+
+  const onReenterPin = () => {
+    setIsPinValid(false);
+    setPinCode('');
+  };
+
+  const onUpdateBalance = (newBalance) => {
+    const updatedUser = {
+      ...user,
+      balance: newBalance
+    };
+
+    setUser(updatedUser);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <img src='/atm_sign.png' style={{width: 550}}></img>
+      <div className="atm-screen">
+        {!isCardInserted && <InitialScreen setIsCardInserted={setIsCardInserted}/>}
+        {(isCardInserted && !isPinValid) && <PinScreen setPinCode={setPinCode} checkPin={checkPin} pinCode={pinCode}/>}
+        {isPinValid && <TransactionScreen user={user} onUpdateBalance={onUpdateBalance} onExit={onExit} onReenterPin={onReenterPin}/>}
+      </div>
     </div>
   );
 }
