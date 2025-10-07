@@ -13,8 +13,8 @@ const TransactionScreen = ({ user, onExit, onReenterPin, onUpdateBalance }) => {
 
     const [showBalance, setShowBalance] = useState(false);
     const [transactionType, setTransactionType] = useState('');
-    const [amount, setAmount] = useState(null);
-    const [isValidAmount, setIsvalidAmont] = useState(false);
+    const [amount, setAmount] = useState('');
+    const [isValidAmount, setIsvalidAmount] = useState(false);
     const { firstName, lastName, balance, cardType } = user;
 
     const onShowBalance = () => {
@@ -25,29 +25,32 @@ const TransactionScreen = ({ user, onExit, onReenterPin, onUpdateBalance }) => {
     const onDeposit = () => {
         setTransactionType(transactionTypes.DEPOSIT);
         setShowBalance(false);
+        setAmount('');
     };
 
     const onWithdrawal = () => {
         setTransactionType(transactionTypes.WITHDRAWAL);
         setShowBalance(false);
+        setAmount('');
     };
 
     const onTransaction = () => {
         if (transactionType === transactionTypes.WITHDRAWAL) {
-            onUpdateBalance(balance - amount);
+            onUpdateBalance(balance - Number(amount));
         }
 
         if (transactionType === transactionTypes.DEPOSIT) {
             onUpdateBalance(balance + Number(amount));
         }
 
-        setAmount(null);
+        setAmount('');
         setTransactionType('');
     };
 
     const onAmountChange = (value) => {
-        if (value > 0 && typeof value === "number" && value%1 === 0) {
-            setIsvalidAmont(true);
+        if (Number(value) > 0 && (typeof Number(value) === "number")) {
+            setIsvalidAmount(true);
+            setAmount(Number(value));
         }
         setAmount(value);
     };
@@ -71,8 +74,8 @@ const TransactionScreen = ({ user, onExit, onReenterPin, onUpdateBalance }) => {
                 {(transactionType && transactionType !== transactionTypes.SHOW_BALANCE) &&
                     <>
                         <Title level={2}>Enter the Amount</Title>
-                        <input type="number" min="0" step="1" value={amount} onChange={(e) => onAmountChange(e.target.value)}></input>
-                        <button onClick={onTransaction} disabled={isValidAmount}>OK</button>
+                        <input name="amount" type="number" min="0" step="1" value={amount} onChange={(e) => onAmountChange(e.target.value)}></input>
+                        <button onClick={onTransaction} disabled={!isValidAmount}>OK</button>
                     </>
                 }
             </div>
